@@ -1,0 +1,7 @@
+.bazelrc
+WORKSPACE
+bazel/get_workspace_status
+bazel-bin
+bazel-envoy
+bazel-out
+bazel-testlogs
