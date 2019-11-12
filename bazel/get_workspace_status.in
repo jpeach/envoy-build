@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+cd $Envoy_Repository
+exec ./bazel/get_workspace_status
