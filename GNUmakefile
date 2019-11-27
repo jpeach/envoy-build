@@ -4,6 +4,9 @@ MKDIR_P := mkdir -p
 
 Envoy_Repository := $(HOME)/upstream/envoy
 
+export CC := clang
+export CXX := clang++
+
 .PHONY: envoy
 envoy:
 	bazel build @envoy//source/exe:envoy-static

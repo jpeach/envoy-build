@@ -1,0 +1,2 @@
+build --config=clang
+build --config=libc++
