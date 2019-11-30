@@ -54,7 +54,7 @@ check:
 setup: .bazelrc bazel/get_workspace_status WORKSPACE
 
 .bazelrc:
-	$(LN_S) $(Envoy_Repository)/.bazelrc
+	@echo echo "import $(Envoy_Repository)/.bazelrc" > $@
 
 bazel/get_workspace_status: bazel/get_workspace_status.in
 	@sed '-es^$$Envoy_Repository^$(Envoy_Repository)^g' < $< > $@
