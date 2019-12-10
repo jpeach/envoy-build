@@ -10,6 +10,8 @@ Envoy_Repository := $(HOME)/upstream/envoy
 Install_Pkg_Fedora := dnf install -y
 
 Packages_Fedora := \
+	aspell \
+	aspell-en \
 	autoconf \
 	automake \
 	clang \
