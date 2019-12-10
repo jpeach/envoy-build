@@ -67,6 +67,7 @@ WORKSPACE: WORKSPACE.in
 
 .PHONY: distclean
 distclean:
+	@bazel clean
 	$(RM_F) .bazelrc
 	$(RM_F) WORKSPACE
 	$(RM_F) bazel/get_workspace_status
