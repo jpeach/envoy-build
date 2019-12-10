@@ -53,6 +53,11 @@ export CXX := clang++
 envoy:
 	bazel build @envoy//source/exe:envoy-static
 
+.PHONY: fetch
+fetch:
+	bazel fetch @envoy//source/exe:envoy-static
+	bazel fetch @envoy//test/...
+
 .PHONY: check
 check:
 	bazel test @envoy//test/...
