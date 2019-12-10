@@ -5,6 +5,8 @@ MKDIR_P := mkdir -p
 export CC := clang
 export CXX := clang++
 
+Clang_Format := clang-format
+
 OS := $(shell uname -s)
 Linux_Distribution := $(shell source /etc/os-release && echo $$NAME)
 
@@ -54,6 +56,16 @@ envoy:
 .PHONY: check
 check:
 	bazel test @envoy//test/...
+
+# NOTE: buildifier and buildozer are disabled since it's hard to
+# match the version that Envoy CI uses.
+.PHONY: format
+format:
+	cd $(Envoy_Repository) && \
+	CLANG_FORMAT=$${CLANG_FORMAT:-$(Clang_Format)} \
+		BUILDIFIER_BIN=$${BUILDIFIER_BIN:-true} \
+		BUILDOZER_BIN=$${BUILDOZER_BIN:-true} \
+		$(Envoy_Repository)/tools/check_format.py fix
 
 .PHONY: setup
 setup: .bazelrc bazel/get_workspace_status WORKSPACE
