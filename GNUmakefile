@@ -2,6 +2,9 @@ LN_S := ln -s
 RM_F := rm -rf
 MKDIR_P := mkdir -p
 
+export CC := clang
+export CXX := clang++
+
 OS := $(shell uname -s)
 Linux_Distribution := $(shell source /etc/os-release && echo $$NAME)
 
