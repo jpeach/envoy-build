@@ -68,6 +68,11 @@ bazel/get_workspace_status: bazel/get_workspace_status.in
 WORKSPACE: WORKSPACE.in
 	@sed '-es^$$Envoy_Repository^$(Envoy_Repository)^g' < $< > $@
 
+.PHONY: symbols
+symbols:
+	@cd $(Envoy_Repository) && ./tools/gen_compilation_database.py \
+		--vscode --include_headers --include_genfiles --include_external --run_bazel_build
+
 .PHONY: distclean
 distclean:
 	@bazel clean
