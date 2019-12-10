@@ -1,1 +1,2 @@
 build --config=clang
+test --compilation_mode=dbg
