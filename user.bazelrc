@@ -1,2 +1,4 @@
-build --config=clang
+startup --batch_cpu_scheduling --io_nice_level 7
 test --compilation_mode=dbg
+test --config=clang --jobs 6 --ram_utilization_factor 50
+build --config=clang --jobs 6 --ram_utilization_factor 50
