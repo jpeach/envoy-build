@@ -8,7 +8,7 @@ export CXX := clang++
 Clang_Format := clang-format
 
 OS := $(shell uname -s)
-Linux_Distribution := $(shell source /etc/os-release && echo $$NAME)
+Linux_Distribution := $(shell source /etc/os-release 2>/dev/null && echo $$NAME)
 
 Envoy_Repository := $(HOME)/upstream/envoy
 
@@ -46,21 +46,40 @@ Packages_Ubuntu :=  \
 	patch \
 	unzip
 
+Packages_Darwin :=  \
+	aspell \
+	autoconf \
+	automake \
+	bazelisk \
+	buildifier \
+	clang-format \
+	cmake \
+	coreutils \
+	libtool \
+	ninja \
+	wget
+
+# On Linux we want to use `--config-clang` to force the build to use Clang,
+# but that breaks macOS because it adds `-fuse-ld=lld` which isn't supported
+# on macOS.
+Bazel_Build_Darwin :=
+Bazel_Build_Linux := --config=clang
+
 export CC := clang
 export CXX := clang++
 
 .PHONY: envoy
 envoy: ## Build envoy
-	bazel build @envoy//source/exe:envoy-static
+	bazel build $(Bazel_Build_$(OS)) @envoy//source/exe:envoy-static
+
+.PHONY: check
+check: ## Run envoy unit tests
+	bazel test $(Bazel_Build_$(OS)) @envoy//test/...
 
 .PHONY: fetch
 fetch: ## Fetch envoy build dependencies
 	bazel fetch @envoy//source/exe:envoy-static
 	bazel fetch @envoy//test/...
-
-.PHONY: check
-check: ## Run envoy unit tests
-	bazel test @envoy//test/...
 
 # NOTE: buildifier and buildozer are disabled since it's hard to
 # match the version that Envoy CI uses.
@@ -93,9 +112,10 @@ WORKSPACE: WORKSPACE.in
 
 .PHONY: distclean
 distclean: ## Deep clean of all final and intermediate artifacts
-	@bazel clean
+	@-bazel clean
 	$(RM_F) .bazelrc
 	$(RM_F) WORKSPACE
+	$(RM_F) envoy-static
 	$(RM_F) bazel/get_workspace_status
 	$(RM_F) bazel-bin bazel-envoy bazel-out bazel-testlogs
 
@@ -106,6 +126,10 @@ install-deps: install-deps-$(OS)
 install-deps-Linux:
 	sudo $(Install_Pkg_$(Linux_Distribution)) $(Packages_$(Linux_Distribution))
 	go get -u github.com/bazelbuild/bazelisk
+
+.PHONY: install-deps-Darwin
+install-deps-Darwin:
+	brew install $(Packages_$(OS))
 
 .PHONY: help
 help: ## Show this help
