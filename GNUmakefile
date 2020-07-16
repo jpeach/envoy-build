@@ -71,6 +71,7 @@ export CXX := clang++
 .PHONY: envoy
 envoy: ## Build envoy
 	bazel build $(Bazel_Build_$(OS)) @envoy//source/exe:envoy-static
+	[[ -L envoy-static ]] || ln -s bazel-bin/external/envoy/source/exe/envoy-static
 
 .PHONY: check
 check: ## Run envoy unit tests
