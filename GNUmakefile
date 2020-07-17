@@ -111,12 +111,22 @@ bazel/get_workspace_status: bazel/get_workspace_status.in
 WORKSPACE: WORKSPACE.in
 	@sed '-es^$$Envoy_Repository^$(Envoy_Repository)^g' < $< > $@
 
+.PHONY: container
+container: ## Package the envoy-static binary into a container image
+	source /etc/os-release && [[ "$$NAME" == Fedora ]] # enforce that we hav a Fedora build
+	test -L envoy-static # ensure we have a envoy build
+	$(RM_F) envoy
+	cp $$(realpath envoy-static) envoy
+	sudo docker build -t jpeach/envoy-devel:$$(date +%s) .
+	$(RM_F) envoy
+
 .PHONY: distclean
 distclean: ## Deep clean of all final and intermediate artifacts
 	@-bazel clean
 	$(RM_F) .bazelrc
 	$(RM_F) WORKSPACE
 	$(RM_F) envoy-static
+	$(RM_F) envoy
 	$(RM_F) bazel/get_workspace_status
 	$(RM_F) bazel-bin bazel-envoy bazel-out bazel-testlogs
 
