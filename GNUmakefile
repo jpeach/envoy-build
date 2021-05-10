@@ -8,7 +8,7 @@ export CXX := clang++
 Clang_Format := clang-format
 
 OS := $(shell uname -s)
-Linux_Distribution := $(shell source /etc/os-release 2>/dev/null && echo $$NAME)
+Linux_Distribution := $(shell . /etc/os-release 2>/dev/null && echo $$NAME)
 
 Envoy_Repository := $(HOME)/upstream/envoy
 
@@ -30,9 +30,10 @@ Packages_Fedora := \
 	make \
 	ninja-build \
 	patch \
+	python3-pip \
 	unzip
 
-Install_Pkg_Ubuntu := apt-get install -y
+Install_Pkg_Ubuntu := apt install -y
 
 Packages_Ubuntu :=  \
 	autoconf \
@@ -44,6 +45,7 @@ Packages_Ubuntu :=  \
 	make \
 	ninja-build \
 	patch \
+	python3-pip \
 	unzip
 
 Packages_Darwin :=  \
@@ -131,12 +133,11 @@ distclean: ## Deep clean of all final and intermediate artifacts
 	$(RM_F) bazel-bin bazel-envoy bazel-out bazel-testlogs
 
 .PHONY: install-deps
-install-deps: install-deps-$(OS)
+install-deps: install-deps-$(OS) ## Install build dependencies
 
 .PHONY: install-deps-Linux
 install-deps-Linux:
 	sudo $(Install_Pkg_$(Linux_Distribution)) $(Packages_$(Linux_Distribution))
-	go get -u github.com/bazelbuild/bazelisk
 
 .PHONY: install-deps-Darwin
 install-deps-Darwin:
