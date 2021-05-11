@@ -99,12 +99,17 @@ symbols: ## Build compilation database
 	@cd $(Envoy_Repository) && ./tools/gen_compilation_database.py \
 		--vscode --include_headers --include_genfiles --include_external --run_bazel_build
 
+Generated_Setup_Files := .bazelrc .bazelversion bazel/get_workspace_status WORKSPACE
+
 .PHONY: setup
 setup: ## Do initial workspace setup
-setup: .bazelrc bazel/get_workspace_status WORKSPACE
+setup: $(Generated_Setup_Files)
 
 .bazelrc:
 	@echo "import $(Envoy_Repository)/.bazelrc" > $@
+
+.bazelversion:
+	$(LN_S) $(Envoy_Repository)/.bazelversion
 
 bazel/get_workspace_status: bazel/get_workspace_status.in
 	@sed '-es^$$Envoy_Repository^$(Envoy_Repository)^g' < $< > $@
@@ -125,11 +130,9 @@ container: ## Package the envoy-static binary into a container image
 .PHONY: distclean
 distclean: ## Deep clean of all final and intermediate artifacts
 	@-bazel clean
-	$(RM_F) .bazelrc
-	$(RM_F) WORKSPACE
+	$(RM_F) $(Generated_Setup_Files)
 	$(RM_F) envoy-static
 	$(RM_F) envoy
-	$(RM_F) bazel/get_workspace_status
 	$(RM_F) bazel-bin bazel-envoy bazel-out bazel-testlogs
 
 .PHONY: install-deps
