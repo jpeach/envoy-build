@@ -141,6 +141,9 @@ install-deps: install-deps-$(OS) ## Install build dependencies
 .PHONY: install-deps-Linux
 install-deps-Linux:
 	sudo $(Install_Pkg_$(Linux_Distribution)) $(Packages_$(Linux_Distribution))
+	if ! `command -v python >/dev/null 2>&1`; then \
+		sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1000; \
+	fi
 
 .PHONY: install-deps-Darwin
 install-deps-Darwin:
