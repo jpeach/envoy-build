@@ -2,6 +2,9 @@ LN_S := ln -s
 RM_F := rm -rf
 MKDIR_P := mkdir -p
 
+# We use use various bash-isms in the rules.
+SHELL := bash
+
 export CC := clang
 export CXX := clang++
 
@@ -42,6 +45,7 @@ Packages_Ubuntu :=  \
 	cmake \
 	curl \
 	libtool \
+	lld \
 	make \
 	ninja-build \
 	patch \
@@ -120,7 +124,7 @@ WORKSPACE: WORKSPACE.in
 
 .PHONY: container
 container: ## Package the envoy-static binary into a container image
-	source /etc/os-release && [[ "$$NAME" == Fedora ]] # enforce that we hav a Fedora build
+	source /etc/os-release && [[ "$$NAME" == Fedora ]] # enforce that we have a Fedora build
 	test -L envoy-static # ensure we have a envoy build
 	$(RM_F) envoy
 	cp $$(realpath envoy-static) envoy
