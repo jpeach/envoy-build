@@ -23,3 +23,33 @@ Now you can run any of the following targets:
 |  install-deps  |        Install build dependencies
 |  setup         |        Do initial workspace setup
 |  symbols       |        Build compilation database
+
+## Recommended Bazel settings
+
+If you are building on a desktop class machine, Bazel tends to eat all the CPU
+and memory. Below are the `~/.bazelrc` settings that I use to improve my build
+experience. I generate the number of build jobs to be 2 less than the number od
+installed CPUs.
+
+```
+build --jobs 6
+build --local_ram_resources=HOST_RAM*0.75
+build --repository_cache=~/.cache/bazel/repo
+build --disk_cache=~/.cache/bazel/disk
+build --verbose_failures
+
+fetch --repository_cache=~/.cache/bazel/repo
+
+query --repository_cache=~/.cache/bazel/repo
+
+startup --batch_cpu_scheduling
+startup --io_nice_level 7
+
+test --jobs 6
+test --local_ram_resources=HOST_RAM*0.75
+test --compilation_mode=dbg
+test --repository_cache=~/.cache/bazel/repo
+test --verbose_failures
+test --test_verbose_timeout_warnings
+test --test_output=errors
+```
