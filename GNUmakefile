@@ -9,6 +9,8 @@ export CC := clang
 export CXX := clang++
 
 Clang_Format := clang-format
+Buildifier := buildifier
+Buildozer := buildozer
 
 OS := $(shell uname -s)
 Linux_Distribution := $(shell . /etc/os-release 2>/dev/null && echo $$NAME)
@@ -42,10 +44,14 @@ Packages_Ubuntu :=  \
 	autoconf \
 	automake \
 	clang \
+	clangd \
+	clang-format \
+	clang-tidy \
 	cmake \
 	curl \
 	libtool \
 	lld \
+	llvm \
 	make \
 	ninja-build \
 	patch \
@@ -94,8 +100,8 @@ fetch: ## Fetch envoy build dependencies
 format: ## Run envoy source format tooling
 	cd $(Envoy_Repository) && \
 	CLANG_FORMAT=$${CLANG_FORMAT:-$(Clang_Format)} \
-		BUILDIFIER_BIN=$${BUILDIFIER_BIN:-true} \
-		BUILDOZER_BIN=$${BUILDOZER_BIN:-true} \
+		BUILDIFIER_BIN=$${BUILDIFIER_BIN:-$(Buildifier)} \
+		BUILDOZER_BIN=$${BUILDOZER_BIN:-$(Buildozer)} \
 		$(Envoy_Repository)/tools/code_format/check_format.py fix
 
 .PHONY: symbols
