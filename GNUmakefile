@@ -96,12 +96,13 @@ format: ## Run envoy source format tooling
 	CLANG_FORMAT=$${CLANG_FORMAT:-$(Clang_Format)} \
 		BUILDIFIER_BIN=$${BUILDIFIER_BIN:-true} \
 		BUILDOZER_BIN=$${BUILDOZER_BIN:-true} \
-		$(Envoy_Repository)/tools/check_format.py fix
+		$(Envoy_Repository)/tools/code_format/check_format.py fix
 
 .PHONY: symbols
 symbols: ## Build compilation database
 	@cd $(Envoy_Repository) && ./tools/gen_compilation_database.py \
-		--vscode --include_headers --include_genfiles --include_external --run_bazel_build
+		--vscode --include_headers --include_genfiles --include_external \
+		//source/exe:envoy-static
 
 Generated_Setup_Files := .bazelrc .bazelversion bazel/get_workspace_status WORKSPACE
 
