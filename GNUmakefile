@@ -9,6 +9,9 @@ export CC := clang
 export CXX := clang++
 
 Clang_Format := clang-format
+Clang_Tidy := clang-tidy
+Clang_Apply_Replacements := clang-apply-replacements-12
+
 Buildifier := buildifier
 Buildozer := buildozer
 
@@ -103,6 +106,16 @@ format: ## Run envoy source format tooling
 		BUILDIFIER_BIN=$${BUILDIFIER_BIN:-$(Buildifier)} \
 		BUILDOZER_BIN=$${BUILDOZER_BIN:-$(Buildozer)} \
 		$(Envoy_Repository)/tools/code_format/check_format.py fix
+
+.PHONY: tidy
+tidy: ## Run envoy clang-tidy tooling
+	cd $(Envoy_Repository) && \
+	RUN_FULL_CLANG_TIDY=1 \
+	APPLY_CLANG_TIDY_FIXES=1 \
+	COMP_DB_TARGETS=//source/exe:envoy-static \
+	CLANG_TIDY=$${CLANG_TIDY:-$(Clang_Tidy)} \
+	CLANG_APPLY_REPLACEMENTS=$${CLANG_APPLY_REPLACEMENTS:-$(Clang_Apply_Replacements)} \
+		$(Envoy_Repository)/ci/run_clang_tidy.sh
 
 .PHONY: symbols
 symbols: ## Build compilation database
