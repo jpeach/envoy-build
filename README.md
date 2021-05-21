@@ -53,3 +53,7 @@ test --verbose_failures
 test --test_verbose_timeout_warnings
 test --test_output=errors
 ```
+
+## Other notes
+
+The `--config-libc++` build option is broken due to [bazelbuild/bazel#13071](https://github.com/bazelbuild/bazel/issues/13071).
