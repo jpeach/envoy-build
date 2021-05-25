@@ -128,8 +128,16 @@ Generated_Setup_Files := .bazelrc .bazelversion bazel/get_workspace_status WORKS
 setup: ## Do initial workspace setup
 setup: $(Generated_Setup_Files)
 
-.bazelrc:
+# Set up .bazelrc. If the platform is building with clang, generate the clang
+# configuration and import it into the bazelrc.
+.bazelrc: .bazelversion WORKSPACE
 	@echo "import $(Envoy_Repository)/.bazelrc" > $@
+	@case "$(Bazel_Build_$(OS))" in \
+	*config=clang*) \
+		$(Envoy_Repository)/bazel/setup_clang.sh; \
+		echo "try-import %workspace%/clang.bazelrc" >> $@ ; \
+		;; \
+	esac
 
 .bazelversion:
 	$(LN_S) $(Envoy_Repository)/.bazelversion
@@ -154,6 +162,7 @@ container: ## Package the envoy-static binary into a container image
 distclean: ## Deep clean of all final and intermediate artifacts
 	@-bazel clean
 	$(RM_F) $(Generated_Setup_Files)
+	$(RM_F) clang.bazelrc
 	$(RM_F) envoy-static
 	$(RM_F) envoy
 	$(RM_F) bazel-bin bazel-envoy bazel-out bazel-testlogs
