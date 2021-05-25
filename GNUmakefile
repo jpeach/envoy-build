@@ -120,8 +120,7 @@ tidy: ## Run envoy clang-tidy tooling
 .PHONY: symbols
 symbols: ## Build compilation database
 	@cd $(Envoy_Repository) && ./tools/gen_compilation_database.py \
-		--vscode --include_headers --include_genfiles --include_external \
-		//source/exe:envoy-static
+		--vscode --include_headers --include_genfiles --include_external
 
 Generated_Setup_Files := .bazelrc .bazelversion bazel/get_workspace_status WORKSPACE
 
