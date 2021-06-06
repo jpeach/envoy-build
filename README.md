@@ -54,6 +54,26 @@ test --test_verbose_timeout_warnings
 test --test_output=errors
 ```
 
+## Remote building with Llama
+
+[llama](https://github.com/nelhage/llama) lets you farms build jobs out to AWS
+Lambda, effectively letting you use unlimited build parallelism.
+
+To quickly get this set up, there are some convenience build targets.
+
+```bash
+# Start by installing llama
+$ make llama/install
+# Next, build the build container image and push it to your AWS lambda stack
+$ make llama/image
+# You need to run the llama server separately because the Bazel sandbox
+# interferes with the server autostart in ways that are awkward to work
+# around.
+$ make llama/server &
+# Now you can build envoy with llama
+$ CC=/tmp/bazel/llamacc bazel build --jobs=1000 --config=clang @envoy//source/exe:envoy-static
+```
+
 ## Other notes
 
 The `--config-libc++` build option is broken due to [bazelbuild/bazel#13071](https://github.com/bazelbuild/bazel/issues/13071).

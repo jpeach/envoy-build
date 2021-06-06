@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+export LLAMACC_LOCAL_CC=${LLAMACC_LOCAL_CC}
+export LLAMACC_LOCAL_CXX=${LLAMACC_LOCAL_CXX}
+export LLAMACC_LOCAL_PREPROCESS=${LLAMACC_LOCAL_PREPROCESS}
+export LLAMACC_FULL_PREPROCESS=1 # https://github.com/nelhage/llama/issues/37
+
+exec ${LLAMACC} "$@"

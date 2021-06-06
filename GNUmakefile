@@ -1,4 +1,4 @@
-LN_S := ln -s
+LN_S := ln -sf
 RM_F := rm -rf
 MKDIR_P := mkdir -p
 
@@ -7,6 +7,10 @@ SHELL := bash
 
 export CC := clang
 export CXX := clang++
+
+export GOPATH
+export GOBIN
+export HOME
 
 Clang_Format := clang-format
 Clang_Tidy := clang-tidy
@@ -80,8 +84,10 @@ Packages_Darwin :=  \
 Bazel_Build_Darwin :=
 Bazel_Build_Linux := --config=clang
 
-export CC := clang
-export CXX := clang++
+export CC := $(shell which clang)
+export CXX := $(shell which clang++)
+
+include llama.mk
 
 .PHONY: envoy
 envoy: ## Build envoy
@@ -159,7 +165,7 @@ container: ## Package the envoy-static binary into a container image
 	$(RM_F) envoy
 
 .PHONY: distclean
-distclean: ## Deep clean of all final and intermediate artifacts
+distclean:: ## Deep clean of all final and intermediate artifacts
 	@-bazel clean
 	$(RM_F) $(Generated_Setup_Files)
 	$(RM_F) clang.bazelrc
@@ -185,3 +191,6 @@ install-deps-Darwin:
 help: ## Show this help
 	@echo Targets:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9._-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+	@echo
+	@echo LLama targets:
+	@awk 'BEGIN {FS = ":.*?## "} /^llama\/[a-zA-Z0-9._-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
