@@ -5,6 +5,8 @@ MKDIR_P := mkdir -p
 # We use use various bash-isms in the rules.
 SHELL := bash
 
+.DEFAULT_GOAL := help
+
 export CC := clang
 export CXX := clang++
 
