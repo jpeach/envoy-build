@@ -1,5 +1,8 @@
 FROM ghcr.io/nelhage/llama as llama
 
+# The official build images aren't tagged with symbolic names, only with the
+# SHA that matches the Envoy version. For this FROM line to work, you need to
+# pull the SHA image and tag it as :latest.
 FROM envoyproxy/envoy-build-ubuntu
 
 ENV DEBIAN_FRONTEND noninteractive

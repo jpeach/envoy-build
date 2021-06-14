@@ -86,6 +86,8 @@ Packages_Darwin :=  \
 Bazel_Build_Darwin :=
 Bazel_Build_Linux := --config=clang
 
+Bazel_Build_Args ?=
+
 export CC := $(shell which clang)
 export CXX := $(shell which clang++)
 
@@ -195,4 +197,4 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9._-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 	@echo
 	@echo LLama targets:
-	@awk 'BEGIN {FS = ":.*?## "} /^llama\/[a-zA-Z0-9._-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+	@awk 'BEGIN {FS = ":.*?## "} /^llama\/[a-zA-Z0-9._-/]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
